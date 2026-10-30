@@ -37,21 +37,20 @@ scenario() { # branch title setup-command [pr-create flags...]
 git fetch -q "$REMOTE" main
 git switch -q main
 git reset -q --hard "$REMOTE/main"
-mkdir -p notes
 
-scenario s/pass     "scenario: checks pass"    'echo pass > notes/pass.txt'
+scenario s/pass     "scenario: checks pass"    'mkdir -p notes && echo pass > notes/pass.txt'
 scenario s/fail     "scenario: checks fail"    'mkdir -p ci && echo "scenario s/fail" > ci/fail'
 scenario s/pending  "scenario: checks pending" 'mkdir -p ci && echo 2700 > ci/slow'
-scenario s/draft    "scenario: draft"          'echo draft > notes/draft.txt' --draft
+scenario s/draft    "scenario: draft"          'mkdir -p notes && echo draft > notes/draft.txt' --draft
 scenario s/nochecks "scenario: no checks"      'git rm -q .github/workflows/ci.yml'
 
 if ! exists s/merged; then
-  scenario s/merged "scenario: merged" 'echo merged > notes/merged.txt'
+  scenario s/merged "scenario: merged" 'mkdir -p notes && echo merged > notes/merged.txt'
   sleep 5
   gh pr merge s/merged -R "$REPO" --merge
 fi
 if ! exists s/closed; then
-  scenario s/closed "scenario: closed" 'echo closed > notes/closed.txt'
+  scenario s/closed "scenario: closed" 'mkdir -p notes && echo closed > notes/closed.txt'
   gh pr close s/closed -R "$REPO"
 fi
 
