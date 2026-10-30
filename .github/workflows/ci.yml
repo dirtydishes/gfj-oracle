@@ -1,0 +1,19 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: scenario outcome
+        run: |
+          if [ -f ci/slow ]; then sleep "$(cat ci/slow)"; fi
+          if [ -f ci/fail ]; then echo "failing on purpose: $(cat ci/fail)"; exit 1; fi
+          echo ok
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo lint ok
